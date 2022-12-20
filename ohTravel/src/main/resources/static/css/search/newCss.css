@@ -765,6 +765,10 @@ p {
 	margin-top: 260px;
 }
 
+.eps5 p+.choice .choice-btn {
+	margin-top: 260px;
+}
+
 label {
 	font-weight: 600;
 }
