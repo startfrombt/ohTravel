@@ -231,7 +231,7 @@
 </details>
 
 <details>
-<summary>검색 결과 페이지(정렬 및 필터)</summary>
+<summary>검색 결과 페이지(정렬 및 필터, 고민을 많이 했던 부분)</summary>
 <div markdown="1">
 
 ![스프링 프로젝트 - 검색결과페이지(정렬 필터-10MB이하)](https://user-images.githubusercontent.com/82436530/218246078-2765086f-c339-4b5d-a4fd-685db9affb56.gif)
@@ -423,7 +423,7 @@
 </details>
 
 <details>
-<summary>프로시저를 통한 마일리지 등급 변경 처리</summary>
+<summary>프로시저를 통한 마일리지 등급 변경 처리(고민을 많이 했던 부분)</summary>
 <div markdown="1">
 
 * 문제
