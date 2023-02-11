@@ -400,7 +400,7 @@ GitHub(PR) : [<u>PR 링크</u>](https://github.com/LWHyun/ohTravel/pulls?q=is%3A
 <div markdown="1">
 
 * 문제
-‘상품 예약’ 이라는 하나의 작업이 성공적으로 처리되어야만 실제 DB 데이터에 Commit 이 되도록 구현해야함
+    * ‘상품 예약’ 이라는 하나의 작업이 성공적으로 처리되어야만 실제 DB 데이터에 Commit 이 되도록 구현해야함
 
 * 해결과정
     1. Service 단에서 @Transaction 을 통해 여러 작업을 하나의 트랜잭션으로 묶이도록 구현.
@@ -417,6 +417,10 @@ GitHub(PR) : [<u>PR 링크</u>](https://github.com/LWHyun/ohTravel/pulls?q=is%3A
 결제정보 등록  
 \------------------------------
 
+* 코드링크
+    * <https://github.com/startfrombt/ohTravel/blob/608911461648fed811dac19894bcaa38c7a6736e/ohTravel/src/main/java/com/oracle/ohTravel/pkage/service/PkageServiceImpl.java#L143>
+
+
 * 비고
 회원의 마일리지 등급 update 시 회원이 가지고 있는 마일리지와 마일리지 등급의 수준과 비교하여 변경이 이루어져야 하는 문제가 발생
 (프로시저를 통해 해결)
@@ -429,8 +433,8 @@ GitHub(PR) : [<u>PR 링크</u>](https://github.com/LWHyun/ohTravel/pulls?q=is%3A
 <div markdown="1">
 
 * 문제
-상품 예약으로 회원의 마일리지가 적립되고 난 후 회원이 가지고 있는 마일리지와 마일리지 등급의 수준과 비교하여 등급의 변화가 일어나야 할 경우 변경이 이루어져야 함.
-그러나 단순히 Service 단에서 처리하게 되면 DB에 여러 번 접근하게 되고 불필요한 자원 사용이 커짐.
+    * 상품 예약으로 회원의 마일리지가 적립되고 난 후 회원이 가지고 있는 마일리지와 마일리지 등급의 수준과 비교하여 등급의 변화가 일어나야 할 경우 변경이 이루어져야 함.
+    * 그러나 단순히 Service 단에서 처리하게 되면 DB에 여러 번 접근하게 되고 불필요한 자원 사용이 커짐.
 
 * 해결과정
     1. DB의 프로시저를 통하여 마일리지 정보를 조회 , 비교, 변경을 한번에 처리할 수 있도록 구현함.
@@ -448,7 +452,7 @@ GitHub(PR) : [<u>PR 링크</u>](https://github.com/LWHyun/ohTravel/pulls?q=is%3A
     * <https://github.com/startfrombt/ohTravel/blob/e3dbb5930654d753e79c207994e48060f99d26e7/ohTravel/src/main/java/com/oracle/ohTravel/interceptor/ManagerLoginInterCeptor.java#L14>
 
 * 문제
-Admin 로그인 확인을 하는 코드가 중복되는 것의 문제
+    * Admin 로그인 확인을 하는 코드가 중복되는 것의 문제
 
 * 해결과정
     1. 관리자가 아닐 경우 혹은 로그인이 되어있지 않을 경우 Controller를 타지 못하도록 interceptor 를 등록하여 처리
