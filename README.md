@@ -317,7 +317,7 @@
 </details>
 
 <details>
-<summary>상품 예약 검사</summary>
+<summary>상품 예약 관련 검사(가장 어려웠던 부분)</summary>
 <div markdown="1">
 
 1. 인원 선택의 총 명수가 잔여 석을 넘기지 못하도록 처리
