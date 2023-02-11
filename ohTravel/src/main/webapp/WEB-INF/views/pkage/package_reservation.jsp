@@ -694,6 +694,7 @@
                         $(item).focus();
                         lastCheck = false;
                         return false;
+                // 에러메세지 존재 여부
                     }else if($(item).siblings().length != 0) {
                         $(item).focus();
                         lastCheck = false;

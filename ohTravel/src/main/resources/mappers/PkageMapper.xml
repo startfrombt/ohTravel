@@ -351,46 +351,7 @@
 		left outer join air_schedule ashe on pfs.Schedule_id = ashe.Schedule_id
 		left outer join airline aline on ashe.Air_num = aline.Air_num
 		<!-- pkage_id 가 null 이 아닌 경우는 검색을 해서 들어온 것이 아니고, 패키지는 클릭했을 때 해당 패키지에 대한 내용만 가져오기 위함 -->
-		where True
-		<if test="pkage_id != null">
-			and p.pkage_id = #{pkage_id} and pkage_dt_startDay >= #{dates_start_check}
-		</if>
-		<if test="pkage_id == null">
-			and true and pkage_dt_startDay >= #{dates_start_check}
-		</if>
-		<!-- 가격 필터 --> <!-- (max만 왔는지 - 1, min만 왔는지- 2, min max 모두 왔는지 - 3) -->
-		<if test='pkgSearch.amtGubun != null'>
-			<choose> 
-				<when test='amtGubun.equals("1")'>
-				<![CDATA[ 
-					And (pd.pkage_dt_Aprice <= ${pkgSearch.maxAmt})
-				]]>
-				</when>
-				<when test='amtGubun.equals("2")'>
-				<![CDATA[ 
-					And (pd.pkage_dt_Aprice >= ${pkgSearch.minAmt})
-				]]>
-				</when>
-				<when test='amtGubun.equals("3")'>
-				<![CDATA[ 
-					And (pd.pkage_dt_Aprice between ${pkgSearch.minAmt} and ${pkgSearch.maxAmt})
-				]]>
-				</when>
-			</choose>
-		</if>
-		<if test='pkgSearch.chk_term != null'> <!-- 여행 기간 - 두 날짜의 차이 (day), DAY 는 단위를 뜻함, TIMESTAMPDIFF(단위, 날짜1, 날짜2);-->
-			and TIMESTAMPDIFF(DAY, date(pd.pkage_dt_startDay), date(pd.pkage_dt_endDay))+1 = #{pkgSearch.chk_term}
-		</if>
-		<if test='pkgSearch.chk_time != null'> <!-- 출발 시간 - date의 시간만 비교 -->
-			<choose>
-				<when test='pkgSearch.chk_time.equals("AM")'>
-					and (hour(pd.pkage_dt_startDay) between '5' and '12')
-				</when>
-				<when test='pkgSearch.chk_time.equals("PM")'>
-					and (hour(pd.pkage_dt_startDay) between '12' and '18')
-				</when>
-			</choose>
-		</if>
+		<include refid="selectPkgCondition"></include>
 		<choose><!-- 각 정렬에 맞게 먼저 정렬되고, 같은 것이 있다면 더 많이 팔린것 순으로 정렬 -->
 			<when test="order == 1">
 				order by pkage_soldCnt desc
@@ -591,9 +552,6 @@
 		where True
 		<if test="pkage_id != null">
 			and p.pkage_id = #{pkage_id} and pkage_dt_startDay >= #{dates_start_check}
-		</if>
-		<if test="pkage_id == null">
-			and true and pkage_dt_startDay >= #{dates_start_check}
 		</if>
 		<!-- 가격 필터 --> <!-- (max만 왔는지 - 1, min만 왔는지- 2, min max 모두 왔는지 - 3) -->
 		<if test='pkgSearch.amtGubun != null'>

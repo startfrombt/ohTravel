@@ -6,7 +6,9 @@ import java.util.List;
 import com.oracle.ohTravel.airport.model.Air_ScheduleDTORM;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Data
 public class Pkage_flightScheDTO {
 	private Integer pkage_dt_id;	// 패키지 상세 ID
@@ -37,8 +39,10 @@ public class Pkage_flightScheDTO {
 		
 		// 1000 밀리초 = 1초
 		flightHour = diff / (1000 * 60 * 60);
+		
+		// diff 에서 시간값을 뺀 나머지 시간이 분
 		flightMinute = (diff-(flightHour*(1000 * 60 * 60))) / (1000 * 60);
 		
-		
+		log.info(flightHour+"시간 "+flightMinute+"분 소요");
 	}
 }

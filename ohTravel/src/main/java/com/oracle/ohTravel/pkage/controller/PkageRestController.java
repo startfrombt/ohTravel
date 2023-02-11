@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -142,7 +143,7 @@ public class PkageRestController {
 			return new ResponseEntity<String>("DEL_OK", HttpStatus.OK);
 		} catch(Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>("DEL_ERR", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("DEL_ERR", HttpStatus.BAD_REQUEST);  
 		}
 	}
 	
@@ -164,6 +165,7 @@ public class PkageRestController {
 			check = pkageService.selectPkgDetailReservCheck(map);
 		} catch(Exception e) {
 			e.printStackTrace();
+			return new ResponseEntity<String>("ServerError", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		// check가 1이면 이미 예약한 상품
@@ -264,13 +266,14 @@ public class PkageRestController {
 			// 예약하려는 패키지 기간의 날짜를 하나하나 비교
 			for(Date detailDate : dateList) {
 				// compareTo : 크면(양수), 같으면(0), 작으면(음수)
+				// 예약하려는 상품의 기간에 속하는 날짜가 예약 중인 상품의 기간 사이에 있으면 중복이기에 1 반환
 				if(detailDate.compareTo(rsStartDate) >= 0 && rsEndDate.compareTo(detailDate) >= 0) {
 					duplicate = 1;
 					break outer;
 				}
 			}
 		}
-
+		
 		return duplicate;
 	}
 	
