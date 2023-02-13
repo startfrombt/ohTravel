@@ -147,6 +147,97 @@ GitHub(PR) : [<u>PR 링크</u>](https://github.com/LWHyun/ohTravel/pulls?q=is%3A
 # 구현 기능
 ### 패키지 검색
 <details>
+<summary>상품 예약 관련 검사(가장 어려웠던 부분)</summary>
+<div markdown="1">
+
+1. 인원 선택의 총 명수가 잔여 석을 넘기지 못하도록 처리
+    ![스프링 프로젝트 - 상세 상품 페이지(검사-잔여좌석 초과)](https://user-images.githubusercontent.com/82436530/218248465-dc6e7d59-3bc1-4c72-a561-94f48812e260.gif)
+
+
+2. 내가 예약한 상품이라면 예약 한 상품임을 표시하여 예약 불가하도록 처리
+    ![스프링 프로젝트 - 상세 상품 페이지(검사-예약한 상품여부)](https://user-images.githubusercontent.com/82436530/218248546-4d495052-313f-46cb-ac92-4f520f0793bd.gif)
+
+3. 잔여좌석이 존재하지 않은 경우 예약 불가
+    ![스프링 프로젝트 - 상세 상품 페이지(검사-잔여좌석0개)](https://user-images.githubusercontent.com/82436530/218248651-90e78598-040a-426a-8791-457b6afc6f02.gif)
+
+4. 현재 예약할 상품이 이미 예약한 상품들의 날짜와 겹친다면 예약여부를 체크
+    ![스프링 프로젝트 - 상세 상품 페이지(검사-예약날짜겹침)](https://user-images.githubusercontent.com/82436530/218248783-a6c959ec-4ebc-42ae-ba9b-8826a5ab3c6e.gif)
+    * 이 문제가 가장 많이 고민을 했던 문제였습니다. 예약하려는 상품의 기간이 이미 예약한 상품들의 날짜 중 겹치는 날짜가 1일이라도 있다면 알림을 보내주어야 하는 로직이 고민을 많이 하게 했던 것 같습니다.
+    * 해결과정
+        1. 예약하려는 상품과 회원이 예약한 상품들의 기간을 조회하여 비교
+        2. 예약하려는 상품의 기간과 예약 중인 상품들의 기간을 비교
+            * 예약하려는 상품의 날짜들을 반복하면서 해당 날짜가 이미 예약 중인 상품의 기간에 속한다면 중복이기 때문에 1을 return;
+            * (예약중인 상품의 시작날짜 <= 예약하려는 상품의 날짜 <= 예약중인 상품의 종료날짜)
+    * 코드링크
+        * <https://github.com/startfrombt/ohTravel/blob/e3dbb5930654d753e79c207994e48060f99d26e7/ohTravel/src/main/java/com/oracle/ohTravel/pkage/controller/PkageRestController.java#L240>
+
+</div>
+</details>
+
+<details>
+<summary>프로시저를 통한 마일리지 등급 변경 처리(고민을 많이 했던 부분)</summary>
+<div markdown="1">
+
+* 문제
+    * 상품 예약으로 회원의 마일리지가 적립되고 난 후 회원이 가지고 있는 마일리지와 마일리지 등급의 수준과 비교하여 등급의 변화가 일어나야 할 경우 변경이 이루어져야 함.
+    * 그러나 단순히 Service 단에서 처리하게 되면 DB에 여러 번 접근하게 되고 불필요한 자원 사용이 커짐.
+
+* 해결과정
+    1. DB의 프로시저를 통하여 마일리지 정보를 조회 , 비교, 변경을 한번에 처리할 수 있도록 구현함.
+    * ![프로시저](https://user-images.githubusercontent.com/82436530/218249569-c2e0d7f7-7702-4195-a462-2214f91fa6a4.png)
+    * ![image](https://user-images.githubusercontent.com/82436530/218249686-7c57f02c-aa69-44a7-99d7-ac7b9cb8faa5.png)
+
+</div>
+</details>
+
+<details>
+<summary>검색 결과 페이지(정렬 및 필터, 고민을 많이 했던 부분)</summary>
+<div markdown="1">
+
+![스프링 프로젝트 - 검색결과페이지(정렬 필터-10MB이하)](https://user-images.githubusercontent.com/82436530/218246078-2765086f-c339-4b5d-a4fd-685db9affb56.gif)
+
+1. 필터와 정렬을 함께 적용한 결과를 조회
+
+2. 정렬은 정렬 종류 중 1가지만 선택 가능
+
+3. 필터는 각 필터 종류별 1가지 씩 선택가능 하고, 적용된 필터에 적합한 패키지 결과를 조회
+
+4. 적용한 필터에 적합한 상품이 없을 경우 검색결과 없음 표시
+
+<br>
+
+* 문제1
+    * 가격, 여행 기간, 출발 시간 데이터를 받아 해당 데이터에 속하는 상품들만 필터링 해주는 기능을 구현해야함
+* 해결과정
+    * 동적쿼리를 통해 필터에 관한 데이터가 없을 경우엔 필터에 대한 조건이 붙지않음.
+    * 필터의 종류는 서로 겹쳐서 검색가능 하도록 \<if\> 태그를 사용했지만, 종류별 값의 범위는 \<when\> 태그를 통해 범위 중 1개의 범위에만 필터가 적용되도록 구현
+* 코드링크
+    * 필터
+        * <https://github.com/startfrombt/ohTravel/blob/e3dbb5930654d753e79c207994e48060f99d26e7/ohTravel/src/main/resources/mappers/PkageMapper.xml#L551>
+    * 정렬
+        * <https://github.com/startfrombt/ohTravel/blob/e3dbb5930654d753e79c207994e48060f99d26e7/ohTravel/src/main/resources/mappers/PkageMapper.xml#L355>
+* 아쉬운점
+    * 출발 시간의 경우 비교하는 시간을 하드코딩을 통해 구현한 부분을 리팩토링하지 못함..
+    * 가격의 경우에도 현재 존재하는 상품의 가격의 범위가 아닌 프론트 단에서 하드코딩된 데이터를 받아와서 범위를 설정하고 있음..
+
+<br>
+
+* 문제2
+    * 정렬 기준에 따른 패키지 상품 정렬과 패키지 상품 뿐만 아니라 패키지 상품을 포함하고 있는 패키지 또한 정렬을 해줘야 함
+* 해결과정
+    * 패키지 상품의 경우 가격에 대한 칼럼이 존재하기 때문에 DB 영역에서 바로 정렬을 해서 가져오지만, 패키지 자체의 경우엔 따로 가격에 대한 컬럼이 존재하지 않아 java 단에서 max 가격을 가지고 Comparator 인터페이스를 통해 정렬되도록 구현
+* 코드링크
+    * <https://github.com/startfrombt/ohTravel/blob/e3dbb5930654d753e79c207994e48060f99d26e7/ohTravel/src/main/java/com/oracle/ohTravel/pkage/controller/PkageController.java#L167>
+    * ![image](https://user-images.githubusercontent.com/82436530/218246454-efb08e09-9bc2-429b-912c-1b75f1e192b8.png)
+    * ![image](https://user-images.githubusercontent.com/82436530/218246463-06460295-b0a8-4dfa-95d2-5944eb0b792a.png)
+* 아쉬운점
+    * 패키지 자체의 정렬 또한 DB 측에서 정렬되도록 구현가능한지 가능하다면 어떻게 해야하는지에 대한 해결책을 떠올릴 수 없었음. 그래서 그 대안으로 java 단에서 정렬을 해준 것이지만, DB 단에서 정렬이 되어서 올 수 있도록 하지 못한 것이 아쉬움
+    * 하드코딩이 존재하여 해당 값에 대한 정보를 enum 클래스를 통해 어느정도 하드코딩의 단점을 해결할 수 있었던 것을 생각해내지 못함.
+
+</div>
+</details>
+
+<details>
 <summary>여행 장소 / 날짜 요소를 이용한 패키지 검색 페이지
 </summary>
 <div markdown="1">
@@ -233,53 +324,6 @@ GitHub(PR) : [<u>PR 링크</u>](https://github.com/LWHyun/ohTravel/pulls?q=is%3A
 </details>
 
 <details>
-<summary>검색 결과 페이지(정렬 및 필터, 고민을 많이 했던 부분)</summary>
-<div markdown="1">
-
-![스프링 프로젝트 - 검색결과페이지(정렬 필터-10MB이하)](https://user-images.githubusercontent.com/82436530/218246078-2765086f-c339-4b5d-a4fd-685db9affb56.gif)
-
-1. 필터와 정렬을 함께 적용한 결과를 조회
-
-2. 정렬은 정렬 종류 중 1가지만 선택 가능
-
-3. 필터는 각 필터 종류별 1가지 씩 선택가능 하고, 적용된 필터에 적합한 패키지 결과를 조회
-
-4. 적용한 필터에 적합한 상품이 없을 경우 검색결과 없음 표시
-
-<br>
-
-* 문제1
-    * 가격, 여행 기간, 출발 시간 데이터를 받아 해당 데이터에 속하는 상품들만 필터링 해주는 기능을 구현해야함
-* 해결과정
-    * 동적쿼리를 통해 필터에 관한 데이터가 없을 경우엔 필터에 대한 조건이 붙지않음.
-    * 필터의 종류는 서로 겹쳐서 검색가능 하도록 \<if\> 태그를 사용했지만, 종류별 값의 범위는 \<when\> 태그를 통해 범위 중 1개의 범위에만 필터가 적용되도록 구현
-* 코드링크
-    * 필터
-        * <https://github.com/startfrombt/ohTravel/blob/e3dbb5930654d753e79c207994e48060f99d26e7/ohTravel/src/main/resources/mappers/PkageMapper.xml#L551>
-    * 정렬
-        * <https://github.com/startfrombt/ohTravel/blob/e3dbb5930654d753e79c207994e48060f99d26e7/ohTravel/src/main/resources/mappers/PkageMapper.xml#L355>
-* 아쉬운점
-    * 출발 시간의 경우 비교하는 시간을 하드코딩을 통해 구현한 부분을 리팩토링하지 못함..
-    * 가격의 경우에도 현재 존재하는 상품의 가격의 범위가 아닌 프론트 단에서 하드코딩된 데이터를 받아와서 범위를 설정하고 있음..
-
-<br>
-
-* 문제2
-    * 정렬 기준에 따른 패키지 상품 정렬과 패키지 상품 뿐만 아니라 패키지 상품을 포함하고 있는 패키지 또한 정렬을 해줘야 함
-* 해결과정
-    * 패키지 상품의 경우 가격에 대한 칼럼이 존재하기 때문에 DB 영역에서 바로 정렬을 해서 가져오지만, 패키지 자체의 경우엔 따로 가격에 대한 컬럼이 존재하지 않아 java 단에서 max 가격을 가지고 Comparator 인터페이스를 통해 정렬되도록 구현
-* 코드링크
-    * <https://github.com/startfrombt/ohTravel/blob/e3dbb5930654d753e79c207994e48060f99d26e7/ohTravel/src/main/java/com/oracle/ohTravel/pkage/controller/PkageController.java#L167>
-    * ![image](https://user-images.githubusercontent.com/82436530/218246454-efb08e09-9bc2-429b-912c-1b75f1e192b8.png)
-    * ![image](https://user-images.githubusercontent.com/82436530/218246463-06460295-b0a8-4dfa-95d2-5944eb0b792a.png)
-* 아쉬운점
-    * 패키지 자체의 정렬 또한 DB 측에서 정렬되도록 구현가능한지 가능하다면 어떻게 해야하는지에 대한 해결책을 떠올릴 수 없었음. 그래서 그 대안으로 java 단에서 정렬을 해준 것이지만, DB 단에서 정렬이 되어서 올 수 있도록 하지 못한 것이 아쉬움
-    * 하드코딩이 존재하여 해당 값에 대한 정보를 enum 클래스를 통해 어느정도 하드코딩의 단점을 해결할 수 있었던 것을 생각해내지 못함.
-
-</div>
-</details>
-
-<details>
 <summary>상세 상품 페이지</summary>
 <div markdown="1">
 
@@ -318,33 +362,7 @@ GitHub(PR) : [<u>PR 링크</u>](https://github.com/LWHyun/ohTravel/pulls?q=is%3A
 </div>
 </details>
 
-<details>
-<summary>상품 예약 관련 검사(가장 어려웠던 부분)</summary>
-<div markdown="1">
 
-1. 인원 선택의 총 명수가 잔여 석을 넘기지 못하도록 처리
-    ![스프링 프로젝트 - 상세 상품 페이지(검사-잔여좌석 초과)](https://user-images.githubusercontent.com/82436530/218248465-dc6e7d59-3bc1-4c72-a561-94f48812e260.gif)
-
-
-2. 내가 예약한 상품이라면 예약 한 상품임을 표시하여 예약 불가하도록 처리
-    ![스프링 프로젝트 - 상세 상품 페이지(검사-예약한 상품여부)](https://user-images.githubusercontent.com/82436530/218248546-4d495052-313f-46cb-ac92-4f520f0793bd.gif)
-
-3. 잔여좌석이 존재하지 않은 경우 예약 불가
-    ![스프링 프로젝트 - 상세 상품 페이지(검사-잔여좌석0개)](https://user-images.githubusercontent.com/82436530/218248651-90e78598-040a-426a-8791-457b6afc6f02.gif)
-
-4. 현재 예약할 상품이 이미 예약한 상품들의 날짜와 겹친다면 예약여부를 체크
-    ![스프링 프로젝트 - 상세 상품 페이지(검사-예약날짜겹침)](https://user-images.githubusercontent.com/82436530/218248783-a6c959ec-4ebc-42ae-ba9b-8826a5ab3c6e.gif)
-    * 이 문제가 가장 많이 고민을 했던 문제였습니다. 예약하려는 상품의 기간이 이미 예약한 상품들의 날짜 중 겹치는 날짜가 1일이라도 있다면 알림을 보내주어야 하는 로직이 고민을 많이 하게 했던 것 같습니다.
-    * 해결과정
-        1. 예약하려는 상품과 회원이 예약한 상품들의 기간을 조회하여 비교
-        2. 예약하려는 상품의 기간과 예약 중인 상품들의 기간을 비교
-            * 예약하려는 상품의 날짜들을 반복하면서 해당 날짜가 이미 예약 중인 상품의 기간에 속한다면 중복이기 때문에 1을 return;
-            * (예약중인 상품의 시작날짜 <= 예약하려는 상품의 날짜 <= 예약중인 상품의 종료날짜)
-    * 코드링크
-        * <https://github.com/startfrombt/ohTravel/blob/e3dbb5930654d753e79c207994e48060f99d26e7/ohTravel/src/main/java/com/oracle/ohTravel/pkage/controller/PkageRestController.java#L240>
-
-</div>
-</details>
 
 <details>
 <summary>예약 페이지(유효성 검사)</summary>
@@ -424,22 +442,6 @@ GitHub(PR) : [<u>PR 링크</u>](https://github.com/LWHyun/ohTravel/pulls?q=is%3A
 * 비고
 회원의 마일리지 등급 update 시 회원이 가지고 있는 마일리지와 마일리지 등급의 수준과 비교하여 변경이 이루어져야 하는 문제가 발생
 (프로시저를 통해 해결)
-
-</div>
-</details>
-
-<details>
-<summary>프로시저를 통한 마일리지 등급 변경 처리(고민을 많이 했던 부분)</summary>
-<div markdown="1">
-
-* 문제
-    * 상품 예약으로 회원의 마일리지가 적립되고 난 후 회원이 가지고 있는 마일리지와 마일리지 등급의 수준과 비교하여 등급의 변화가 일어나야 할 경우 변경이 이루어져야 함.
-    * 그러나 단순히 Service 단에서 처리하게 되면 DB에 여러 번 접근하게 되고 불필요한 자원 사용이 커짐.
-
-* 해결과정
-    1. DB의 프로시저를 통하여 마일리지 정보를 조회 , 비교, 변경을 한번에 처리할 수 있도록 구현함.
-    * ![프로시저](https://user-images.githubusercontent.com/82436530/218249569-c2e0d7f7-7702-4195-a462-2214f91fa6a4.png)
-    * ![image](https://user-images.githubusercontent.com/82436530/218249686-7c57f02c-aa69-44a7-99d7-ac7b9cb8faa5.png)
 
 </div>
 </details>
