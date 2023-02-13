@@ -145,7 +145,7 @@ GitHub(PR) : [<u>PR 링크</u>](https://github.com/LWHyun/ohTravel/pulls?q=is%3A
 <br>
 
 # 구현 기능
-### 패키지 검색
+### 패키지 검색 및 예약
 <details>
 <summary>상품 예약 관련 검사(가장 어려웠던 부분)</summary>
 <div markdown="1">
