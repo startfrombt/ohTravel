@@ -238,7 +238,7 @@ GitHub(PR) : [<u>PR 링크</u>](https://github.com/LWHyun/ohTravel/pulls?q=is%3A
 </details>
 
 <details>
-<summary>여행 장소 / 날짜 요소를 이용한 패키지 검색 페이지
+<summary>여행 장소 / 날짜 요소를 이용한 패키지 검색 페이지(반정규화)
 </summary>
 <div markdown="1">
 
@@ -255,6 +255,13 @@ GitHub(PR) : [<u>PR 링크</u>](https://github.com/LWHyun/ohTravel/pulls?q=is%3A
 
 코드링크 
 <https://github.com/startfrombt/ohTravel/blob/ada8a6a53c32749f616d6cb7d3c621400ef6740c/ohTravel/src/main/java/com/oracle/ohTravel/pkage/controller/PkageController.java#L108>
+
+* 문제
+    * 패키지 검색 시 필요한 데이터를 얻기 위해 많은 join 연산으로 인한 속도 저하 
+* 해결과정
+    * 반정규화를 통해 날짜 컬럼을 테이블에 따로 추가함으로써 문제 해결
+* 해결 뒤 ERD
+    * ![반정규화 정규화](https://user-images.githubusercontent.com/82436530/219423661-9799873b-a4fa-4d46-8855-05f7bab138e4.png)
 
 </div>
 </details>
