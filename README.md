@@ -466,6 +466,11 @@ GitHub(PR) : [<u>PR 링크</u>](https://github.com/LWHyun/ohTravel/pulls?q=is%3A
 * 해결과정
     1. 관리자가 아닐 경우 혹은 로그인이 되어있지 않을 경우 Controller를 타지 못하도록 interceptor 를 등록하여 처리
     (물론 admin 만 볼 수 있도록 구현되어있지만, url 을 통해 들어오는 것을 방지하고자 함.)
+ * 코드 링크
+    * InterCeptor 생성
+    * <https://github.com/startfrombt/ohTravel/blob/e3dbb5930654d753e79c207994e48060f99d26e7/ohTravel/src/main/java/com/oracle/ohTravel/interceptor/ManagerLoginInterCeptor.java#L14>
+    * InterCeptor 등록
+    *   <https://github.com/startfrombt/ohTravel/blob/e3dbb5930654d753e79c207994e48060f99d26e7/ohTravel/src/main/java/com/oracle/ohTravel/configuration/WebMvcConfiguration.java#L10>
 
 * 아쉬운점
     * Security 를 사용하지 않았기 때문에 직접 interceptor를 구현하였지만, 사실 Security를 통해 구현되었어야할 부분이었습니다.
