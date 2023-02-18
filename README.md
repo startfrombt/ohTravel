@@ -457,9 +457,6 @@ GitHub(PR) : [<u>PR 링크</u>](https://github.com/LWHyun/ohTravel/pulls?q=is%3A
 <summary>패키지 등록 시 interceptor 를 통한 admin 검사</summary>
 <div markdown="1">
 
-* 코드 링크
-    * <https://github.com/startfrombt/ohTravel/blob/e3dbb5930654d753e79c207994e48060f99d26e7/ohTravel/src/main/java/com/oracle/ohTravel/interceptor/ManagerLoginInterCeptor.java#L14>
-
 * 문제
     * Admin 로그인 확인을 하는 코드가 중복되는 것의 문제
 
